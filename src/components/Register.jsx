@@ -37,6 +37,8 @@ export default function Register({ currentPage, setCurrentPage }) {
       if (!success) {
         return; // Don't proceed to next page if registration failed
       }
+      // Save user name to localStorage for the scream game
+      localStorage.setItem("userName", name);
     }
 
     setCurrentPage((prevState) => prevState + 1);
