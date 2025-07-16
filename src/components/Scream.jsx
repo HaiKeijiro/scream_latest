@@ -47,7 +47,7 @@ export default function Scream() {
           setAudioLevel(normalizedLevel);
           
           // Determine if screaming (threshold-based detection)
-          const screamThreshold = 0.15; // Adjust this value for sensitivity
+          const screamThreshold = 0.30; // Adjust this value for sensitivity
           setIsScreaming(normalizedLevel > screamThreshold);
           
           animationFrameRef.current = requestAnimationFrame(analyzeAudio);
