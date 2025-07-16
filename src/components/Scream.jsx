@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 export default function Scream() {
-  const [waterLevel, setWaterLevel] = useState(50); // Water level percentage (0-100)
+  const [waterLevel, setWaterLevel] = useState(0); // Water level percentage (0-100)
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
@@ -73,12 +73,12 @@ export default function Scream() {
     };
   }, []);
 
-  // Water level mechanics
+  // Logo reveal level mechanics (same as water level)
   useEffect(() => {
     const interval = setInterval(() => {
       setWaterLevel(currentLevel => {
         if (isScreaming) {
-          // Fill up quickly when screaming (responsive refill)
+          // Reveal logo quickly when screaming (responsive refill)
           return Math.min(100, currentLevel + 2.5);
         } else {
           // Slow drip when not screaming (natural leak)
@@ -95,7 +95,7 @@ export default function Scream() {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       window.location.reload(); // Refresh to restart with microphone access
     } catch (error) {
-      alert('Microphone access is required for the water mechanic to work!');
+      alert('Microphone access is required for the logo reveal mechanic to work!');
     }
   };
 
@@ -112,36 +112,27 @@ export default function Scream() {
         }}
       />
       
-      {/* Water Container */}
-      <div className="water-container">
-        {/* Water Level */}
+      {/* Logo Reveal Container */}
+      <div className="logo-reveal-container">
+        {/* Revealed portion of logo - grows from bottom up */}
         <div 
-          className="water-level"
+          className="logo-revealed"
           style={{
-            height: `${waterLevel}%`,
-            background: `linear-gradient(0deg, 
-              rgba(64, 164, 223, 0.9) 0%, 
-              rgba(100, 200, 255, 0.8) 50%, 
-              rgba(150, 220, 255, 0.7) 100%)`
+            height: `${waterLevel}%`, // Reveal from bottom up
           }}
-        />
-        
-        {/* Logo as water container visual */}
-        <div className="logo-container">
-          <img 
-            src="/logo.png" 
-            alt="Water Container" 
-            className="water-logo"
-            style={{
-              filter: `opacity(${0.7 + (waterLevel / 100) * 0.3})`,
-              transform: `scale(${0.95 + (waterLevel / 100) * 0.05})`
-            }}
-          />
+        >
+          <div className="logo-fixed">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="logo-image"
+            />
+          </div>
         </div>
         
-        {/* Water ripples effect when screaming */}
+        {/* Ripples effect when screaming */}
         {isScreaming && (
-          <div className="water-ripples">
+          <div className="logo-ripples">
             <div className="ripple ripple-1"></div>
             <div className="ripple ripple-2"></div>
             <div className="ripple ripple-3"></div>
@@ -151,8 +142,8 @@ export default function Scream() {
 
       {/* Status indicators */}
       <div className="status-panel">
-        <div className="water-percentage">
-          Water Level: {Math.round(waterLevel)}%
+        <div className="reveal-percentage">
+          Logo Revealed: {Math.round(waterLevel)}%
         </div>
         
         {microphoneActive ? (
@@ -175,7 +166,7 @@ export default function Scream() {
 
       {/* Instructions */}
       <div className="instructions">
-        <p>🗣️ Scream to fill the water!</p>
+        <p>🗣️ Scream to reveal the logo!</p>
         <p>🔇 Stay quiet and watch it drip away...</p>
       </div>
 
@@ -199,7 +190,7 @@ export default function Scream() {
           z-index: 1;
         }
 
-        .water-container {
+        .logo-reveal-container {
           position: relative;
           width: 300px;
           height: 400px;
@@ -214,37 +205,40 @@ export default function Scream() {
           justify-content: center;
         }
 
-        .water-level {
+        .logo-revealed {
           position: absolute;
           bottom: 0;
           left: 0;
           width: 100%;
+          overflow: hidden;
           transition: height 0.1s ease-out;
-          border-radius: 0 0 16px 16px;
-          box-shadow: 0 -2px 10px rgba(64, 164, 223, 0.3);
-        }
-
-        .logo-container {
-          position: relative;
           z-index: 3;
-          transition: all 0.3s ease;
         }
 
-        .water-logo {
-          max-width: 200px;
-          max-height: 200px;
+        .logo-fixed {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 4;
+        }
+
+        .logo-image {
+          max-width: 250px;
+          max-height: 250px;
           object-fit: contain;
           transition: all 0.3s ease;
+          display: block;
         }
 
-        .water-ripples {
+        .logo-ripples {
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
           pointer-events: none;
-          z-index: 4;
+          z-index: 5;
         }
 
         .ripple {
@@ -301,7 +295,7 @@ export default function Scream() {
           min-width: 200px;
         }
 
-        .water-percentage {
+        .reveal-percentage {
           font-size: 18px;
           font-weight: bold;
           margin-bottom: 10px;
