@@ -132,7 +132,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
 
       // Add a small delay for better UX
       setTimeout(() => {
-        setCurrentPage(2); // Navigate to Score component
+        setCurrentPage((prevState) => prevState + 1); // Navigate to Score component
       }, 1000);
     }
   }, [gameEnded, waterLevel, setCurrentPage, setFinalScore]);

@@ -26,20 +26,37 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
+    score INTEGER NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 });
 
+
+// Get all users
+app.get('/api/users', (req, res) => {
+  db.all('SELECT * FROM users ORDER BY created_at DESC', (err, rows) => {
+    if (err) {
+      console.error('Error retrieving users:', err.message);
+      return res.status(500).json({ error: 'Failed to retrieve users' });
+    }
+
+    res.json({
+      success: true,
+      users: rows
+    });
+  });
+});
+
 // Register a new user
 app.post('/api/register', (req, res) => {
-  const { name, phone } = req.body;
+  const { name, phone, score } = req.body;
 
-  if (!name || !phone) {
-    return res.status(400).json({ error: 'Name and phone are required' });
+  if (!name || !phone || score === undefined) {
+    return res.status(400).json({ error: 'Name, phone and score are required' });
   }
 
-  const stmt = db.prepare('INSERT INTO users (name, phone) VALUES (?, ?)');
-  stmt.run([name.trim(), phone.trim()], function (err) {
+  const stmt = db.prepare('INSERT INTO users (name, phone, score) VALUES (?, ?, ?)');
+  stmt.run([name.trim(), phone.trim(), score], function (err) {
     if (err) {
       console.error('Error inserting user:', err.message);
       return res.status(500).json({ error: 'Failed to register user' });
@@ -48,22 +65,9 @@ app.post('/api/register', (req, res) => {
     res.json({
       success: true,
       message: 'User registered successfully',
-      userId: this.lastID
     });
   });
   stmt.finalize();
-});
-
-// Get all users
-app.get('/api/users', (req, res) => {
-  db.all('SELECT * FROM users ORDER BY created_at DESC', [], (err, rows) => {
-    if (err) {
-      console.error('Error fetching users:', err.message);
-      return res.status(500).json({ error: 'Failed to fetch users' });
-    }
-
-    res.json(rows);
-  });
 });
 
 // Start server
