@@ -121,11 +121,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
 
   // Game over conditions and final score handling
   useEffect(() => {
-    if (gameEnded || waterLevel >= 100) {
-      if (!gameEnded) {
-        setGameEnded(true);
-      }
-
+    if (gameEnded) {
       // Capture final score and navigate to score page
       const finalScore = Math.round(waterLevel);
       setFinalScore(finalScore);
@@ -145,7 +141,14 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       setWaterLevel((currentLevel) => {
         if (isScreaming) {
           // Reveal logo quickly when screaming (responsive refill)
-          return Math.min(100, currentLevel + 2.5);
+          const newLevel = Math.min(100, currentLevel + 2.5);
+          
+          // If we've reached 100%, immediately end the game
+          if (newLevel >= 100 && !gameEnded) {
+            setGameEnded(true);
+          }
+          
+          return newLevel;
         } else {
           // Slow drip when not screaming (natural leak)
           return Math.max(0, currentLevel - 0.3);
