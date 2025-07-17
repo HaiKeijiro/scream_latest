@@ -64,13 +64,13 @@ export default function Score({ setCurrentPage, finalScore, userData, setUserDat
         </div>
 
         <div>
-          <h1 className="text-[20em] font-black main-color">
+          <h1 className="text-[20em] font-black main-color -mt-20">
             {finalScore}
           </h1>
         </div>
 
         <button onClick={handleBackToStart}>
-          <h1 className="text-[4em] font-black main-color mt-10 uppercase">
+          <h1 className="text-[4em] font-black main-color uppercase">
             {finalScore === 100
               ? "excellent!"
               : finalScore >= 80
@@ -81,7 +81,7 @@ export default function Score({ setCurrentPage, finalScore, userData, setUserDat
       </div>
 
       <div>
-        <img src="/festival.png" alt="indomart" className="mx-auto" />
+        <img src="/logo-fun-bike.png" alt="indomart" className="mx-auto" />
       </div>
     </div>
   );

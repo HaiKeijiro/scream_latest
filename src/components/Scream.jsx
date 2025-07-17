@@ -6,7 +6,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
-  const [gameTimer, setGameTimer] = useState(5); // Game timer in seconds
+  const [gameTimer, setGameTimer] = useState(30); // Game timer in seconds
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
 
@@ -20,7 +20,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   // Reset game state when component mounts (for play again functionality)
   useEffect(() => {
     setWaterLevel(0);
-    setGameTimer(5);
+    setGameTimer(30);
     setGameStarted(false);
     setGameEnded(false);
     setIsScreaming(false);
@@ -142,12 +142,12 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
         if (isScreaming) {
           // Reveal logo quickly when screaming (responsive refill)
           const newLevel = Math.min(100, currentLevel + 2.5);
-          
+
           // If we've reached 100%, immediately end the game
           if (newLevel >= 100 && !gameEnded) {
             setGameEnded(true);
           }
-          
+
           return newLevel;
         } else {
           // Slow drip when not screaming (natural leak)
@@ -186,7 +186,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       </div>
 
       {/* Logo Reveal Container */}
-      <div className="relative w-[837px] h-[520px] rounded-[20px] overflow-hidden z-[2] flex items-center justify-center mx-auto mt-20">
+      <div className="relative w-[743px] h-[760px] rounded-[20px] overflow-hidden z-[2] flex items-center justify-center mx-auto mt-20">
         {/* Revealed portion of logo - grows from bottom up */}
         <div
           className="absolute bottom-0 left-0 w-full overflow-hidden transition-[height] duration-100 ease-out z-[3]"
@@ -196,9 +196,9 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
         >
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[4]">
             <img
-              src="/festival.png"
+              src="/logo-fun-bike.png"
               alt="Logo"
-              className="block w-[837px] h-[520px] max-w-none object-cover transition-all duration-300 ease-in-out"
+              className="block w-[743px] h-[760px] max-w-none object-cover transition-all duration-300 ease-in-out"
             />
           </div>
         </div>

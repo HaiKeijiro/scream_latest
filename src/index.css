@@ -46,7 +46,7 @@ input[type="number"] {
 
 /* Background utilities */
 .bg-image {
-  background-image: url("/bg.png");
+  background-image: url("/fun-bike-bg.png");
   @apply h-screen w-full bg-cover bg-center bg-no-repeat;
 }
 
