@@ -166,10 +166,10 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   };
 
   return (
-    <div className="scream-container">
+    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center">
       {/* Background */}
       <div
-        className="background"
+        className="absolute top-0 left-0 w-full h-full z-[1]"
         style={{
           backgroundImage: "url(/bg.png)",
           backgroundSize: "cover",
@@ -179,324 +179,76 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       />
 
       {/* Logo Reveal Container */}
-      <div className="logo-reveal-container">
+      <div className="relative w-[837px] h-[520px] border-4 border-slate-700 rounded-[20px] overflow-hidden bg-white/10 backdrop-blur-[10px] z-[2] flex items-center justify-center">
         {/* Revealed portion of logo - grows from bottom up */}
         <div
-          className="logo-revealed"
+          className="absolute bottom-0 left-0 w-full overflow-hidden transition-[height] duration-100 ease-out z-[3]"
           style={{
             height: `${waterLevel}%`, // Reveal from bottom up
           }}
         >
-          <div className="logo-fixed">
-            <img src="/festival.png" alt="Logo" className="logo-image" />
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[4]">
+            <img src="/festival.png" alt="Logo" className="block w-[837px] h-[520px] max-w-none object-cover transition-all duration-300 ease-in-out" />
           </div>
         </div>
 
         {/* Ripples effect when screaming */}
         {isScreaming && (
-          <div className="logo-ripples">
-            <div className="ripple ripple-1"></div>
-            <div className="ripple ripple-2"></div>
-            <div className="ripple ripple-3"></div>
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-[5]">
+            <div className="absolute top-[20%] left-[30%] w-10 h-10 border-2 border-white/60 rounded-full animate-[ripple-animation_1s_infinite]"></div>
+            <div className="absolute top-[60%] left-[60%] w-[30px] h-[30px] border-2 border-white/60 rounded-full animate-[ripple-animation_1s_infinite] delay-300"></div>
+            <div className="absolute top-[40%] left-[10%] w-[35px] h-[35px] border-2 border-white/60 rounded-full animate-[ripple-animation_1s_infinite] delay-[600ms]"></div>
           </div>
         )}
       </div>
 
       {/* Status indicators */}
-      <div className="status-panel">
-        <div className="timer-display">
-          <div className="timer-label">⏰ Time Remaining</div>
-          <div className={`timer-value ${gameTimer <= 10 ? 'timer-critical' : ''}`}>
+      <div className="absolute top-5 right-5 bg-black/70 text-white p-[15px] rounded-[10px] z-[5] min-w-[200px]">
+        <div className="mb-[15px] text-center">
+          <div className="text-sm text-blue-400 mb-[5px]">⏰ Time Remaining</div>
+          <div className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${gameTimer <= 10 ? 'text-red-400 animate-[pulse-timer_1s_infinite]' : 'text-green-400'}`}>
             {Math.floor(gameTimer / 60)}:{(gameTimer % 60).toString().padStart(2, '0')}
           </div>
         </div>
         
-        <div className="reveal-percentage">
+        <div className="text-lg font-bold mb-2.5 text-blue-400">
           Logo Revealed: {Math.round(waterLevel)}%
         </div>
 
         {gameEnded && (
-          <div className="game-over-indicator">
+          <div className="bg-red-400/90 text-white p-2.5 rounded-lg text-center font-bold text-base mb-2.5 animate-pulse">
             🎮 GAME OVER
           </div>
         )}
 
         {microphoneActive ? (
-          <div className="audio-indicator">
-            <div className="mic-active">🎤 Listening...</div>
-            <div className="audio-level-bar">
+          <div>
+            <div className="text-green-400 text-sm mb-[5px]">🎤 Listening...</div>
+            <div className="w-full h-[6px] bg-white/30 rounded-[3px] overflow-hidden mb-[5px]">
               <div
-                className="audio-level-fill"
+                className="h-full bg-gradient-to-r from-green-400 via-orange-400 to-red-500 rounded-[3px] transition-[width] duration-100 ease-in-out"
                 style={{ width: `${audioLevel * 100}%` }}
               />
             </div>
             {isScreaming && (
-              <div className="scream-indicator">🔊 SCREAMING!</div>
+              <div className="text-red-400 font-bold animate-pulse">🔊 SCREAMING!</div>
             )}
           </div>
         ) : (
-          <button onClick={requestMicrophoneAccess} className="mic-button">
+          <button 
+            onClick={requestMicrophoneAccess} 
+            className="bg-green-400 text-white border-none py-2.5 px-[15px] rounded-[5px] cursor-pointer text-sm transition-colors duration-300 ease-in-out hover:bg-green-500"
+          >
             Enable Microphone
           </button>
         )}
       </div>
 
       {/* Instructions */}
-      <div className="instructions">
-        <p>🗣️ Scream to reveal the logo!</p>
-        <p>🔇 Stay quiet and watch it drip away...</p>
+      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-black/70 text-white py-[15px] px-[25px] rounded-[10px] text-center z-[5]">
+        <p className="my-[5px] text-sm">🗣️ Scream to reveal the logo!</p>
+        <p className="my-[5px] text-sm">🔇 Stay quiet and watch it drip away...</p>
       </div>
-
-      <style jsx>{`
-        .scream-container {
-          position: relative;
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-        }
-
-        .logo-reveal-container {
-          position: relative;
-          width: 837px;
-          height: 520px;
-          border: 4px solid #2c3e50;
-          border-radius: 20px;
-          overflow: hidden;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          z-index: 2;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .logo-revealed {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          overflow: hidden;
-          transition: height 0.1s ease-out;
-          z-index: 3;
-        }
-
-        .logo-fixed {
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 4;
-        }
-
-        .logo-image {
-          width: 837px !important;
-          height: 520px !important;
-          max-width: none !important;
-          object-fit: cover;
-          transition: all 0.3s ease;
-          display: block;
-        }
-
-        .logo-ripples {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 5;
-        }
-
-        .ripple {
-          position: absolute;
-          border: 2px solid rgba(255, 255, 255, 0.6);
-          border-radius: 50%;
-          animation: ripple-animation 1s infinite;
-        }
-
-        .ripple-1 {
-          top: 20%;
-          left: 30%;
-          width: 40px;
-          height: 40px;
-          animation-delay: 0s;
-        }
-
-        .ripple-2 {
-          top: 60%;
-          left: 60%;
-          width: 30px;
-          height: 30px;
-          animation-delay: 0.3s;
-        }
-
-        .ripple-3 {
-          top: 40%;
-          left: 10%;
-          width: 35px;
-          height: 35px;
-          animation-delay: 0.6s;
-        }
-
-        @keyframes ripple-animation {
-          0% {
-            transform: scale(0);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(2);
-            opacity: 0;
-          }
-        }
-
-        .status-panel {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          background: rgba(0, 0, 0, 0.7);
-          color: white;
-          padding: 15px;
-          border-radius: 10px;
-          z-index: 5;
-          min-width: 200px;
-        }
-
-        .timer-display {
-          margin-bottom: 15px;
-          text-align: center;
-        }
-
-        .timer-label {
-          font-size: 14px;
-          color: #4da6ff;
-          margin-bottom: 5px;
-        }
-
-        .timer-value {
-          font-size: 24px;
-          font-weight: bold;
-          color: #4caf50;
-          transition: color 0.3s ease;
-        }
-
-        .timer-critical {
-          color: #ff4444 !important;
-          animation: pulse-timer 1s infinite;
-        }
-
-        @keyframes pulse-timer {
-          0%, 100% {
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.7;
-            transform: scale(1.05);
-          }
-        }
-
-        .reveal-percentage {
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 10px;
-          color: #4da6ff;
-        }
-
-        .game-over-indicator {
-          background: rgba(255, 68, 68, 0.9);
-          color: white;
-          padding: 10px;
-          border-radius: 8px;
-          text-align: center;
-          font-weight: bold;
-          font-size: 16px;
-          margin-bottom: 10px;
-          animation: pulse 1s infinite;
-        }
-
-        .mic-active {
-          color: #4caf50;
-          font-size: 14px;
-          margin-bottom: 5px;
-        }
-
-        .audio-level-bar {
-          width: 100%;
-          height: 6px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 3px;
-          overflow: hidden;
-          margin-bottom: 5px;
-        }
-
-        .audio-level-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #4caf50, #ff9800, #f44336);
-          border-radius: 3px;
-          transition: width 0.1s ease;
-        }
-
-        .scream-indicator {
-          color: #ff4444;
-          font-weight: bold;
-          animation: pulse 0.5s infinite;
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-
-        .mic-button {
-          background: #4caf50;
-          color: white;
-          border: none;
-          padding: 10px 15px;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          transition: background 0.3s ease;
-        }
-
-        .mic-button:hover {
-          background: #45a049;
-        }
-
-        .instructions {
-          position: absolute;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.7);
-          color: white;
-          padding: 15px 25px;
-          border-radius: 10px;
-          text-align: center;
-          z-index: 5;
-        }
-
-        .instructions p {
-          margin: 5px 0;
-          font-size: 14px;
-        }
-      `}</style>
     </div>
   );
 }

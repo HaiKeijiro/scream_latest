@@ -36,3 +36,26 @@ input[type="number"] {
   background-image: url("/bg.png");
   @apply h-screen w-full bg-cover bg-center bg-no-repeat;
 }
+
+/* Custom animations for Scream component */
+@keyframes ripple-animation {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-timer {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
