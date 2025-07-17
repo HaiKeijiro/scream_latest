@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 
 export default function Scream({ setCurrentPage, setFinalScore }) {
+  // Game state
   const [waterLevel, setWaterLevel] = useState(0); // Water level percentage (0-100)
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
-  const [gameTimer, setGameTimer] = useState(180); // Game timer in seconds
+  const [gameTimer, setGameTimer] = useState(5); // Game timer in seconds
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
 
+  // Audio refs
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const microphoneRef = useRef(null);
@@ -18,7 +20,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   // Reset game state when component mounts (for play again functionality)
   useEffect(() => {
     setWaterLevel(0);
-    setGameTimer(180);
+    setGameTimer(5);
     setGameStarted(false);
     setGameEnded(false);
     setIsScreaming(false);
@@ -167,10 +169,12 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden pt-20">
+      {/* Header Section */}
       <div>
         <img src="/indomart.png" alt="indomart" className="mx-auto" />
       </div>
 
+      {/* Timer Section */}
       <div className="main-color mt-30 text-[5em] text-center">
         <div>
           <img src="/keep.png" alt="keep" className="mx-auto" />
@@ -207,19 +211,24 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       </div>
 
       {/* Status indicators - Unhide for testing */}
-      {/* <div className="absolute top-5 right-5 bg-black/70 text-white p-[15px] rounded-[10px] z-[5] min-w-[200px]">
+      {/* 
+      <div className="absolute top-5 right-5 bg-black/70 text-white p-[15px] rounded-[10px] z-[5] min-w-[200px]">
         <div className="mb-[15px] text-center">
           <div className="text-sm text-blue-400 mb-[5px]">
             ⏰ Time Remaining
           </div>
           <div
-            className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${gameTimer <= 10 ? "text-red-400 animate-[pulse-timer_1s_infinite]" : "text-green-400"}`}
+            className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${
+              gameTimer <= 10 
+                ? "text-red-400 animate-[pulse-timer_1s_infinite]" 
+                : "text-green-400"
+            }`}
           >
             {Math.floor(gameTimer / 60)}:
             {(gameTimer % 60).toString().padStart(2, "0")}
           </div>
         </div>
-
+        
         <div className="text-lg font-bold mb-2.5 text-blue-400">
           Logo Revealed: {Math.round(waterLevel)}%
         </div>
@@ -248,22 +257,15 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
             )}
           </div>
         ) : (
-          <button
-            onClick={requestMicrophoneAccess}
+          <button 
+            onClick={requestMicrophoneAccess} 
             className="bg-green-400 text-white border-none py-2.5 px-[15px] rounded-[5px] cursor-pointer text-sm transition-colors duration-300 ease-in-out hover:bg-green-500"
           >
             Enable Microphone
           </button>
         )}
-      </div> */}
-
-      {/* Instructions */}
-      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-black/70 text-white py-[15px] px-[25px] rounded-[10px] text-center z-[5]">
-        <p className="my-[5px] text-sm">🗣️ Scream to reveal the logo!</p>
-        <p className="my-[5px] text-sm">
-          🔇 Stay quiet and watch it drip away...
-        </p>
-      </div>
+      </div> 
+      */}
     </div>
   );
 }

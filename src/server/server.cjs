@@ -30,8 +30,6 @@ db.serialize(() => {
   )`);
 });
 
-// API Routes
-
 // Register a new user
 app.post('/api/register', (req, res) => {
   const { name, phone } = req.body;
@@ -65,24 +63,6 @@ app.get('/api/users', (req, res) => {
     }
 
     res.json(rows);
-  });
-});
-
-// Get user by ID
-app.get('/api/users/:id', (req, res) => {
-  const userId = req.params.id;
-
-  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
-    if (err) {
-      console.error('Error fetching user:', err.message);
-      return res.status(500).json({ error: 'Failed to fetch user' });
-    }
-
-    if (!row) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json(row);
   });
 });
 
