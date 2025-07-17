@@ -15,5 +15,5 @@ export default function Main() {
     <Score setCurrentPage={setCurrentPage} finalScore={finalScore} />,
   ];
 
-  return <div className="bg-image">{pages[currentPage]}</div>;
+  return <div className="bg-image georgia-font">{pages[currentPage]}</div>;
 }

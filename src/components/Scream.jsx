@@ -5,7 +5,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
-  const [gameTimer, setGameTimer] = useState(30); // Game timer in seconds
+  const [gameTimer, setGameTimer] = useState(180); // Game timer in seconds
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   // Reset game state when component mounts (for play again functionality)
   useEffect(() => {
     setWaterLevel(0);
-    setGameTimer(30);
+    setGameTimer(180);
     setGameStarted(false);
     setGameEnded(false);
     setIsScreaming(false);
@@ -123,11 +123,11 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       if (!gameEnded) {
         setGameEnded(true);
       }
-      
+
       // Capture final score and navigate to score page
       const finalScore = Math.round(waterLevel);
       setFinalScore(finalScore);
-      
+
       // Add a small delay for better UX
       setTimeout(() => {
         setCurrentPage(2); // Navigate to Score component
@@ -166,20 +166,20 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center">
-      {/* Background */}
-      <div
-        className="absolute top-0 left-0 w-full h-full z-[1]"
-        style={{
-          backgroundImage: "url(/bg.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
+    <div className="relative w-screen h-screen overflow-hidden pt-20">
+      <div>
+        <img src="/indomart.png" alt="indomart" className="mx-auto" />
+      </div>
+
+      <div className="main-color mt-30 text-[5em] text-center">
+        <div>
+          <img src="/keep.png" alt="keep" className="mx-auto" />
+        </div>
+        <h1 className="font-black text-[1.5em]">{gameTimer}</h1>
+      </div>
 
       {/* Logo Reveal Container */}
-      <div className="relative w-[837px] h-[520px] border-4 border-slate-700 rounded-[20px] overflow-hidden bg-white/10 backdrop-blur-[10px] z-[2] flex items-center justify-center">
+      <div className="relative w-[837px] h-[520px] rounded-[20px] overflow-hidden z-[2] flex items-center justify-center mx-auto mt-20">
         {/* Revealed portion of logo - grows from bottom up */}
         <div
           className="absolute bottom-0 left-0 w-full overflow-hidden transition-[height] duration-100 ease-out z-[3]"
@@ -188,7 +188,11 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
           }}
         >
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[4]">
-            <img src="/festival.png" alt="Logo" className="block w-[837px] h-[520px] max-w-none object-cover transition-all duration-300 ease-in-out" />
+            <img
+              src="/festival.png"
+              alt="Logo"
+              className="block w-[837px] h-[520px] max-w-none object-cover transition-all duration-300 ease-in-out"
+            />
           </div>
         </div>
 
@@ -202,15 +206,20 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
         )}
       </div>
 
-      {/* Status indicators */}
-      <div className="absolute top-5 right-5 bg-black/70 text-white p-[15px] rounded-[10px] z-[5] min-w-[200px]">
+      {/* Status indicators - Unhide for testing */}
+      {/* <div className="absolute top-5 right-5 bg-black/70 text-white p-[15px] rounded-[10px] z-[5] min-w-[200px]">
         <div className="mb-[15px] text-center">
-          <div className="text-sm text-blue-400 mb-[5px]">⏰ Time Remaining</div>
-          <div className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${gameTimer <= 10 ? 'text-red-400 animate-[pulse-timer_1s_infinite]' : 'text-green-400'}`}>
-            {Math.floor(gameTimer / 60)}:{(gameTimer % 60).toString().padStart(2, '0')}
+          <div className="text-sm text-blue-400 mb-[5px]">
+            ⏰ Time Remaining
+          </div>
+          <div
+            className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${gameTimer <= 10 ? "text-red-400 animate-[pulse-timer_1s_infinite]" : "text-green-400"}`}
+          >
+            {Math.floor(gameTimer / 60)}:
+            {(gameTimer % 60).toString().padStart(2, "0")}
           </div>
         </div>
-        
+
         <div className="text-lg font-bold mb-2.5 text-blue-400">
           Logo Revealed: {Math.round(waterLevel)}%
         </div>
@@ -223,7 +232,9 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
 
         {microphoneActive ? (
           <div>
-            <div className="text-green-400 text-sm mb-[5px]">🎤 Listening...</div>
+            <div className="text-green-400 text-sm mb-[5px]">
+              🎤 Listening...
+            </div>
             <div className="w-full h-[6px] bg-white/30 rounded-[3px] overflow-hidden mb-[5px]">
               <div
                 className="h-full bg-gradient-to-r from-green-400 via-orange-400 to-red-500 rounded-[3px] transition-[width] duration-100 ease-in-out"
@@ -231,23 +242,27 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
               />
             </div>
             {isScreaming && (
-              <div className="text-red-400 font-bold animate-pulse">🔊 SCREAMING!</div>
+              <div className="text-red-400 font-bold animate-pulse">
+                🔊 SCREAMING!
+              </div>
             )}
           </div>
         ) : (
-          <button 
-            onClick={requestMicrophoneAccess} 
+          <button
+            onClick={requestMicrophoneAccess}
             className="bg-green-400 text-white border-none py-2.5 px-[15px] rounded-[5px] cursor-pointer text-sm transition-colors duration-300 ease-in-out hover:bg-green-500"
           >
             Enable Microphone
           </button>
         )}
-      </div>
+      </div> */}
 
       {/* Instructions */}
       <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-black/70 text-white py-[15px] px-[25px] rounded-[10px] text-center z-[5]">
         <p className="my-[5px] text-sm">🗣️ Scream to reveal the logo!</p>
-        <p className="my-[5px] text-sm">🔇 Stay quiet and watch it drip away...</p>
+        <p className="my-[5px] text-sm">
+          🔇 Stay quiet and watch it drip away...
+        </p>
       </div>
     </div>
   );
