@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 export default function Scream() {
   const [waterLevel, setWaterLevel] = useState(0); // Water level percentage (0-100)
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
-  
+
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const microphoneRef = useRef(null);
@@ -17,10 +17,13 @@ export default function Scream() {
 
     const setupMicrophone = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         if (!mounted) return;
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
         const analyser = audioContext.createAnalyser();
         const microphone = audioContext.createMediaStreamSource(stream);
 
@@ -34,28 +37,29 @@ export default function Scream() {
 
         // Start audio analysis loop
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
-        
+
         const analyzeAudio = () => {
           if (!mounted) return;
-          
+
           analyser.getByteFrequencyData(dataArray);
-          
+
           // Calculate average volume
-          const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+          const average =
+            dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
           const normalizedLevel = average / 255;
-          
+
           setAudioLevel(normalizedLevel);
-          
+
           // Determine if screaming (threshold-based detection)
-          const screamThreshold = 0.30; // Adjust this value for sensitivity
+          const screamThreshold = 0.3; // Adjust this value for sensitivity
           setIsScreaming(normalizedLevel > screamThreshold);
-          
+
           animationFrameRef.current = requestAnimationFrame(analyzeAudio);
         };
-        
+
         analyzeAudio();
       } catch (error) {
-        console.error('Error accessing microphone:', error);
+        console.error("Error accessing microphone:", error);
         setMicrophoneActive(false);
       }
     };
@@ -76,7 +80,7 @@ export default function Scream() {
   // Logo reveal level mechanics (same as water level)
   useEffect(() => {
     const interval = setInterval(() => {
-      setWaterLevel(currentLevel => {
+      setWaterLevel((currentLevel) => {
         if (isScreaming) {
           // Reveal logo quickly when screaming (responsive refill)
           return Math.min(100, currentLevel + 2.5);
@@ -95,41 +99,39 @@ export default function Scream() {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       window.location.reload(); // Refresh to restart with microphone access
     } catch (error) {
-      alert('Microphone access is required for the logo reveal mechanic to work!');
+      alert(
+        "Microphone access is required for the logo reveal mechanic to work!"
+      );
     }
   };
 
   return (
     <div className="scream-container">
       {/* Background */}
-      <div 
+      <div
         className="background"
         style={{
-          backgroundImage: 'url(/bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundImage: "url(/bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       />
-      
+
       {/* Logo Reveal Container */}
       <div className="logo-reveal-container">
         {/* Revealed portion of logo - grows from bottom up */}
-        <div 
+        <div
           className="logo-revealed"
           style={{
             height: `${waterLevel}%`, // Reveal from bottom up
           }}
         >
           <div className="logo-fixed">
-            <img 
-              src="/logo.png" 
-              alt="Logo" 
-              className="logo-image"
-            />
+            <img src="/festival.png" alt="Logo" className="logo-image" />
           </div>
         </div>
-        
+
         {/* Ripples effect when screaming */}
         {isScreaming && (
           <div className="logo-ripples">
@@ -145,17 +147,19 @@ export default function Scream() {
         <div className="reveal-percentage">
           Logo Revealed: {Math.round(waterLevel)}%
         </div>
-        
+
         {microphoneActive ? (
           <div className="audio-indicator">
             <div className="mic-active">🎤 Listening...</div>
             <div className="audio-level-bar">
-              <div 
+              <div
                 className="audio-level-fill"
                 style={{ width: `${audioLevel * 100}%` }}
               />
             </div>
-            {isScreaming && <div className="scream-indicator">🔊 SCREAMING!</div>}
+            {isScreaming && (
+              <div className="scream-indicator">🔊 SCREAMING!</div>
+            )}
           </div>
         ) : (
           <button onClick={requestMicrophoneAccess} className="mic-button">
@@ -192,8 +196,8 @@ export default function Scream() {
 
         .logo-reveal-container {
           position: relative;
-          width: 300px;
-          height: 400px;
+          width: 837px;
+          height: 520px;
           border: 4px solid #2c3e50;
           border-radius: 20px;
           overflow: hidden;
@@ -224,9 +228,10 @@ export default function Scream() {
         }
 
         .logo-image {
-          max-width: 250px;
-          max-height: 250px;
-          object-fit: contain;
+          width: 837px !important;
+          height: 520px !important;
+          max-width: none !important;
+          object-fit: cover;
           transition: all 0.3s ease;
           display: block;
         }
@@ -331,8 +336,13 @@ export default function Scream() {
         }
 
         @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
 
         .mic-button {
