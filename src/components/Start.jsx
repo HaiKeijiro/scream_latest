@@ -14,7 +14,7 @@ export default function Start({ setCurrentPage }) {
           onClick={() => setCurrentPage((prevState) => prevState + 1)}
           className="mt-25"
         >
-          <img src="/start-button.png" alt="start" className="mx-auto" />
+          <img src="/start-button.png" alt="start" className="mx-auto w-[400px]" />
         </button>
       </div>
     </main>

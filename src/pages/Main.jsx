@@ -6,13 +6,14 @@ import Score from "../components/Score";
 
 export default function Main() {
   const [currentPage, setCurrentPage] = useState(0);
+  const [finalScore, setFinalScore] = useState(null);
 
   const pages = [
     <Start setCurrentPage={setCurrentPage} />,
     // <Register currentPage={currentPage} setCurrentPage={setCurrentPage} />,
-    <Scream setCurrentPage={setCurrentPage} />,
-    // <Score setCurrentPage={setCurrentPage} />,
+    <Scream setCurrentPage={setCurrentPage} setFinalScore={setFinalScore} />,
+    <Score setCurrentPage={setCurrentPage} finalScore={finalScore} />,
   ];
 
-  return <div className="bg-image">{pages[currentPage]}</div>;
+  return <div className="bg-image georgia-font">{pages[currentPage]}</div>;
 }
