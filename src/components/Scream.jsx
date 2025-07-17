@@ -1,15 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 
-export default function Scream() {
+export default function Scream({ setCurrentPage, setFinalScore }) {
   const [waterLevel, setWaterLevel] = useState(0); // Water level percentage (0-100)
   const [isScreaming, setIsScreaming] = useState(false);
   const [microphoneActive, setMicrophoneActive] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [gameTimer, setGameTimer] = useState(30); // Game timer in seconds
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
 
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const microphoneRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const gameTimerRef = useRef(null);
+
+  // Reset game state when component mounts (for play again functionality)
+  useEffect(() => {
+    setWaterLevel(0);
+    setGameTimer(30);
+    setGameStarted(false);
+    setGameEnded(false);
+    setIsScreaming(false);
+    setAudioLevel(0);
+  }, []);
 
   // Microphone setup and audio analysis
   useEffect(() => {
@@ -77,8 +91,54 @@ export default function Scream() {
     };
   }, []);
 
+  // Game timer logic
+  useEffect(() => {
+    if (microphoneActive && !gameStarted && !gameEnded) {
+      setGameStarted(true);
+    }
+
+    if (gameStarted && !gameEnded) {
+      gameTimerRef.current = setInterval(() => {
+        setGameTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            // Timer expired - game over
+            setGameEnded(true);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000); // Update every second
+    }
+
+    return () => {
+      if (gameTimerRef.current) {
+        clearInterval(gameTimerRef.current);
+      }
+    };
+  }, [gameStarted, gameEnded, microphoneActive]);
+
+  // Game over conditions and final score handling
+  useEffect(() => {
+    if (gameEnded || waterLevel >= 100) {
+      if (!gameEnded) {
+        setGameEnded(true);
+      }
+      
+      // Capture final score and navigate to score page
+      const finalScore = Math.round(waterLevel);
+      setFinalScore(finalScore);
+      
+      // Add a small delay for better UX
+      setTimeout(() => {
+        setCurrentPage(2); // Navigate to Score component
+      }, 1000);
+    }
+  }, [gameEnded, waterLevel, setCurrentPage, setFinalScore]);
+
   // Logo reveal level mechanics (same as water level)
   useEffect(() => {
+    if (gameEnded) return; // Stop water level changes when game is over
+
     const interval = setInterval(() => {
       setWaterLevel((currentLevel) => {
         if (isScreaming) {
@@ -92,7 +152,7 @@ export default function Scream() {
     }, 50); // Update every 50ms for smooth animation
 
     return () => clearInterval(interval);
-  }, [isScreaming]);
+  }, [isScreaming, gameEnded]);
 
   const requestMicrophoneAccess = async () => {
     try {
@@ -144,9 +204,22 @@ export default function Scream() {
 
       {/* Status indicators */}
       <div className="status-panel">
+        <div className="timer-display">
+          <div className="timer-label">⏰ Time Remaining</div>
+          <div className={`timer-value ${gameTimer <= 10 ? 'timer-critical' : ''}`}>
+            {Math.floor(gameTimer / 60)}:{(gameTimer % 60).toString().padStart(2, '0')}
+          </div>
+        </div>
+        
         <div className="reveal-percentage">
           Logo Revealed: {Math.round(waterLevel)}%
         </div>
+
+        {gameEnded && (
+          <div className="game-over-indicator">
+            🎮 GAME OVER
+          </div>
+        )}
 
         {microphoneActive ? (
           <div className="audio-indicator">
@@ -300,11 +373,57 @@ export default function Scream() {
           min-width: 200px;
         }
 
+        .timer-display {
+          margin-bottom: 15px;
+          text-align: center;
+        }
+
+        .timer-label {
+          font-size: 14px;
+          color: #4da6ff;
+          margin-bottom: 5px;
+        }
+
+        .timer-value {
+          font-size: 24px;
+          font-weight: bold;
+          color: #4caf50;
+          transition: color 0.3s ease;
+        }
+
+        .timer-critical {
+          color: #ff4444 !important;
+          animation: pulse-timer 1s infinite;
+        }
+
+        @keyframes pulse-timer {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(1.05);
+          }
+        }
+
         .reveal-percentage {
           font-size: 18px;
           font-weight: bold;
           margin-bottom: 10px;
           color: #4da6ff;
+        }
+
+        .game-over-indicator {
+          background: rgba(255, 68, 68, 0.9);
+          color: white;
+          padding: 10px;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: bold;
+          font-size: 16px;
+          margin-bottom: 10px;
+          animation: pulse 1s infinite;
         }
 
         .mic-active {
