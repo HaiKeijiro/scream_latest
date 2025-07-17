@@ -1,50 +1,34 @@
-export default function Score({ setCurrentPage, finalScore, userData, setUserData }) {
-  const saveUserData = async () => {
-    const completeUserData = {
-      name: userData.name.trim(),
-      phone: userData.phone.trim(),
-      score: finalScore
-    };
+export default function Score({ setCurrentPage, finalScore }) {
+  //   const completeUserData = {
+  //     name: userData.name.trim(),
+  //     phone: userData.phone.trim(),
+  //     score: finalScore
+  //   };
 
-    try {
-      const response = await fetch("http://localhost:3002/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(completeUserData),
-      });
+  //   try {
+  //     const response = await fetch("http://localhost:3002/api/register", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(completeUserData),
+  //     });
 
-      if (response.ok) {
-        console.log("User data saved successfully");
-        return true;
-      } else {
-        console.error("Failed to save user data");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error saving user data:", error);
-      return false;
-    }
-  };
+  //     if (response.ok) {
+  //       console.log("User data saved successfully");
+  //       return true;
+  //     } else {
+  //       console.error("Failed to save user data");
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving user data:", error);
+  //     return false;
+  //   }
+  // };
 
   const handleBackToStart = async () => {
-    // Save user data with score before going back to start
-    const success = await saveUserData();
-    
-    // Reset user data for next player
-    setUserData({
-      name: "",
-      phone: ""
-    });
-    
-    if (success) {
-      setCurrentPage(0); // Go back to Start component
-    } else {
-      // Still go back even if save failed, but could show an error message
-      alert("There was an issue saving your data, but you can still play again!");
-      setCurrentPage(0);
-    }
+    setCurrentPage(0);
   };
 
   return (
@@ -64,9 +48,7 @@ export default function Score({ setCurrentPage, finalScore, userData, setUserDat
         </div>
 
         <div>
-          <h1 className="text-[20em] font-black main-color">
-            {finalScore}
-          </h1>
+          <h1 className="text-[20em] font-black main-color">{finalScore}</h1>
         </div>
 
         <button onClick={handleBackToStart}>
