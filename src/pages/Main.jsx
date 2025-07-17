@@ -9,10 +9,10 @@ export default function Main() {
 
   const pages = [
     <Start setCurrentPage={setCurrentPage} />,
-    <Register currentPage={currentPage} setCurrentPage={setCurrentPage} />,
+    // <Register currentPage={currentPage} setCurrentPage={setCurrentPage} />,
     <Scream setCurrentPage={setCurrentPage} />,
-    <Score setCurrentPage={setCurrentPage} />,
+    // <Score setCurrentPage={setCurrentPage} />,
   ];
 
-  return <div>{pages[currentPage]}</div>;
+  return <div className="bg-image">{pages[currentPage]}</div>;
 }

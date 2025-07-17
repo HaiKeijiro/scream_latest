@@ -31,3 +31,8 @@ input[type="number"] {
 .height-input {
   @apply h-[126px];
 }
+
+.bg-image {
+  background-image: url("/bg.png");
+  @apply h-screen w-full bg-cover bg-center bg-no-repeat;
+}
