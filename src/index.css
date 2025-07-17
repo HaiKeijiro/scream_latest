@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Custom Font */
 @font-face {
   font-family: "Georgia";
   src: url("/georgia.ttf") format("truetype");
@@ -8,6 +9,7 @@
   font-display: swap;
 }
 
+/* Scrollbar utilities */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -28,6 +30,7 @@ input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
 
+/* Custom color utilities */
 .main-color {
   @apply text-[#0F61A5];
 }
@@ -36,15 +39,18 @@ input[type="number"] {
   @apply text-[3.25em] font-semibold bg-[#0F61A5] text-white;
 }
 
+/* Custom sizing utilities */
 .height-input {
   @apply h-[126px];
 }
 
+/* Background utilities */
 .bg-image {
   background-image: url("/bg.png");
   @apply h-screen w-full bg-cover bg-center bg-no-repeat;
 }
 
+/* Font utilities */
 .georgia-font {
   font-family: "Georgia", Arial, sans-serif;
 }

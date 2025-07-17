@@ -1,55 +1,87 @@
-export default function Score({ setCurrentPage, finalScore }) {
-  const handlePlayAgain = () => {
-    setCurrentPage(1); // Go back to Scream component
+export default function Score({ setCurrentPage, finalScore, userData, setUserData }) {
+  const saveUserData = async () => {
+    const completeUserData = {
+      name: userData.name.trim(),
+      phone: userData.phone.trim(),
+      score: finalScore
+    };
+
+    try {
+      const response = await fetch("http://localhost:3002/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(completeUserData),
+      });
+
+      if (response.ok) {
+        console.log("User data saved successfully");
+        return true;
+      } else {
+        console.error("Failed to save user data");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error saving user data:", error);
+      return false;
+    }
   };
 
-  const handleBackToStart = () => {
-    setCurrentPage(0); // Go back to Start component
+  const handleBackToStart = async () => {
+    // Save user data with score before going back to start
+    const success = await saveUserData();
+    
+    // Reset user data for next player
+    setUserData({
+      name: "",
+      phone: ""
+    });
+    
+    if (success) {
+      setCurrentPage(0); // Go back to Start component
+    } else {
+      // Still go back even if save failed, but could show an error message
+      alert("There was an issue saving your data, but you can still play again!");
+      setCurrentPage(0);
+    }
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center">
-      {/* Score Display */}
-      <div className="relative z-[2] bg-black/80 rounded-[20px] p-10 text-center text-white border-4 border-blue-400 backdrop-blur-[10px] max-w-[500px] min-w-[400px]">
-        <div className="text-[2.5em] font-bold mb-[30px] text-red-400 [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)]">
-          🎮 GAME OVER
+    <div className="relative w-screen h-screen overflow-hidden py-20 flex flex-col justify-between">
+      {/* Header Section */}
+      <div>
+        <img src="/indomart.png" alt="indomart" className="mx-auto" />
+      </div>
+
+      <div className="text-center">
+        <div className="mt-20">
+          <img
+            src="/your-scream.png"
+            alt="your-scream-score"
+            className="mx-auto"
+          />
         </div>
 
-        <div className="mb-[30px]">
-          <div className="text-xl text-blue-400 mb-2.5">Final Score</div>
-          <div className="text-[4em] font-bold text-green-400 [text-shadow:2px_2px_4px_rgba(0,0,0,0.5)] mb-5">
-            {finalScore}%
-          </div>
+        <div>
+          <h1 className="text-[20em] font-black main-color">
+            {finalScore}
+          </h1>
         </div>
 
-        {finalScore === 100 ? (
-          <div className="text-[1.3em] text-green-400 mb-[30px] leading-[1.5] font-bold">
-            🏆 CONGRATULATIONS! 🏆
-            <br />
-            You revealed the complete logo!
-          </div>
-        ) : (
-          <div className="text-[1.1em] text-orange-400 mb-[30px] leading-[1.5]">
-            ⏰ Time's up!
-            <br />
-            You revealed {finalScore}% of the logo
-          </div>
-        )}
+        <button onClick={handleBackToStart}>
+          <h1 className="text-[4em] font-black main-color mt-10 uppercase">
+            {finalScore === 100
+              ? "excellent!"
+              : finalScore >= 80
+                ? "great! just little more"
+                : "need more practice"}
+          </h1>
+        </button>
+      </div>
 
-        <div className="flex gap-5 justify-center flex-wrap">
-          <button
-            onClick={handlePlayAgain}
-            className="py-[15px] px-[25px] text-[1.1em] font-bold border-none rounded-[10px] cursor-pointer transition-all duration-300 ease-in-out uppercase bg-green-400 text-white hover:bg-green-500 hover:-translate-y-0.5"
-          >
-            🔄 Play Again
-          </button>
-          <button
-            onClick={handleBackToStart}
-            className="py-[15px] px-[25px] text-[1.1em] font-bold border-none rounded-[10px] cursor-pointer transition-all duration-300 ease-in-out uppercase bg-gray-600 text-white hover:bg-gray-700 hover:-translate-y-0.5"
-          >
-            🏠 Back to Start
-          </button>
-        </div>
+      <div>
+        <img src="/festival.png" alt="indomart" className="mx-auto" />
       </div>
     </div>
   );
