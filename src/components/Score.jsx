@@ -20,24 +20,39 @@ export default function Score({ setCurrentPage, finalScore }) {
         </div>
 
         <div>
-          <h1 className="text-[20em] font-black main-color -mt-20">
+          <h1 className="text-[20em] font-black main-color -mt-28">
             {finalScore}
           </h1>
         </div>
 
-        <button onClick={handleBackToStart}>
-          <h1 className="text-[4em] font-black main-color uppercase">
+        <div>
+          <h1 className="text-[3.5em] font-black main-color -mt-20 uppercase">
             {finalScore === 100
-              ? "excellent!"
-              : finalScore >= 80
-                ? "great! just little more"
-                : "need more practice"}
+              ? "perfect! amazing scream!"
+              : finalScore >= 90
+                ? "excellent! almost there!"
+                : finalScore >= 80
+                  ? "great! just little more"
+                  : finalScore >= 70
+                    ? "good! keep practicing"
+                    : finalScore >= 60
+                      ? "not bad! try again"
+                      : finalScore >= 50
+                        ? "okay! you can do better"
+                        : "need more practice"}
           </h1>
+        </div>
+
+        <button
+          onClick={handleBackToStart}
+          className="text-[4em] font-black uppercase bg-[#0F61A5] text-white rounded-full px-32 py-4 mt-5"
+        >
+          Home
         </button>
       </div>
 
       <div>
-        <img src="/logo-fun-bike.png" alt="indomart" className="mx-auto" />
+        <img src="/logo-fun-bike.png" alt="indomart" className="mx-auto mt-5" />
       </div>
     </div>
   );
