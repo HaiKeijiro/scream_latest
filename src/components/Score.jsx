@@ -1,32 +1,4 @@
 export default function Score({ setCurrentPage, finalScore }) {
-  //   const completeUserData = {
-  //     name: userData.name.trim(),
-  //     phone: userData.phone.trim(),
-  //     score: finalScore
-  //   };
-
-  //   try {
-  //     const response = await fetch("http://localhost:3002/api/register", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(completeUserData),
-  //     });
-
-  //     if (response.ok) {
-  //       console.log("User data saved successfully");
-  //       return true;
-  //     } else {
-  //       console.error("Failed to save user data");
-  //       return false;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving user data:", error);
-  //     return false;
-  //   }
-  // };
-
   const handleBackToStart = async () => {
     setCurrentPage(0);
   };
@@ -51,14 +23,29 @@ export default function Score({ setCurrentPage, finalScore }) {
           <h1 className="text-[20em] font-black main-color">{finalScore}</h1>
         </div>
 
-        <button onClick={handleBackToStart}>
-          <h1 className="text-[4em] font-black main-color mt-10 uppercase">
+        <div>
+          <h1 className="text-[3.5em] font-black main-color mt-0 uppercase">
             {finalScore === 100
-              ? "excellent!"
-              : finalScore >= 80
-                ? "great! just little more"
-                : "need more practice"}
+              ? "perfect! amazing scream!"
+              : finalScore >= 90
+                ? "excellent! almost there!"
+                : finalScore >= 80
+                  ? "great! just little more"
+                  : finalScore >= 70
+                    ? "good! keep practicing"
+                    : finalScore >= 60
+                      ? "not bad! try again"
+                      : finalScore >= 50
+                        ? "okay! you can do better"
+                        : "need more practice"}
           </h1>
+        </div>
+
+        <button
+          onClick={handleBackToStart}
+          className="text-[4em] font-black uppercase bg-[#0F61A5] text-white rounded-full px-32 py-4 mt-10"
+        >
+          Home
         </button>
       </div>
 
