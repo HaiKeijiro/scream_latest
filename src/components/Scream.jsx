@@ -170,7 +170,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       setWaterLevel((currentLevel) => {
         if (isScreaming) {
           // Reveal logo quickly when screaming (responsive refill)
-          const newLevel = Math.min(100, currentLevel + 2.5);
+          const newLevel = Math.min(100, currentLevel + 0.4);
           
           // If we've reached 100%, immediately end the game
           if (newLevel >= 100 && !gameEnded && !endGame.current) {
@@ -180,7 +180,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
           return newLevel;
         } else {
           // Slow drip when not screaming (natural leak)
-          return Math.max(0, currentLevel - 0.3);
+          return Math.max(0, currentLevel - 1.2);
         }
       });
     }, 50); // Update every 50ms for smooth animation
