@@ -16,6 +16,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   const microphoneRef = useRef(null);
   const animationFrameRef = useRef(null);
   const gameTimerRef = useRef(null);
+  const waterLevelIntervalRef = useRef(null);
 
   // Reset game state when component mounts (for play again functionality)
   useEffect(() => {
@@ -40,6 +41,12 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
 
         const audioContext = new (window.AudioContext ||
           window.webkitAudioContext)();
+        
+        // Resume audio context if suspended (fixes idle time issue)
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+        
         const analyser = audioContext.createAnalyser();
         const microphone = audioContext.createMediaStreamSource(stream);
 
@@ -55,7 +62,12 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
         const analyzeAudio = () => {
-          if (!mounted) return;
+          if (!mounted || !audioContextRef.current) return;
+
+          // Check if audio context is still active
+          if (audioContextRef.current.state === 'suspended') {
+            audioContextRef.current.resume().catch(console.error);
+          }
 
           analyser.getByteFrequencyData(dataArray);
 
@@ -87,7 +99,7 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      if (audioContextRef.current) {
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
         audioContextRef.current.close();
       }
     };
@@ -119,16 +131,33 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
     };
   }, [gameStarted, gameEnded, microphoneActive]);
 
-  // Game over conditions and final score handling
+  // Centralized game end handler to prevent race conditions
+  const endGame = useRef(false);
   useEffect(() => {
-    if (gameEnded) {
+    if (gameEnded && !endGame.current) {
+      endGame.current = true;
+      
+      // Clear all intervals immediately
+      if (gameTimerRef.current) {
+        clearInterval(gameTimerRef.current);
+        gameTimerRef.current = null;
+      }
+      if (waterLevelIntervalRef.current) {
+        clearInterval(waterLevelIntervalRef.current);
+        waterLevelIntervalRef.current = null;
+      }
+      
       // Capture final score and navigate to score page
       const finalScore = Math.round(waterLevel);
       setFinalScore(finalScore);
+      
+      console.log("Game ended with score:", finalScore); // Debug log
 
       // Add a small delay for better UX
       setTimeout(() => {
-        setCurrentPage((prevState) => prevState + 1); // Navigate to Score component
+        if (endGame.current) { // Double-check to prevent multiple navigations
+          setCurrentPage((prevState) => prevState + 1); // Navigate to Score component
+        }
       }, 1000);
     }
   }, [gameEnded, waterLevel, setCurrentPage, setFinalScore]);
@@ -137,14 +166,14 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
   useEffect(() => {
     if (gameEnded) return; // Stop water level changes when game is over
 
-    const interval = setInterval(() => {
+    waterLevelIntervalRef.current = setInterval(() => {
       setWaterLevel((currentLevel) => {
         if (isScreaming) {
           // Reveal logo quickly when screaming (responsive refill)
           const newLevel = Math.min(100, currentLevel + 2.5);
           
           // If we've reached 100%, immediately end the game
-          if (newLevel >= 100 && !gameEnded) {
+          if (newLevel >= 100 && !gameEnded && !endGame.current) {
             setGameEnded(true);
           }
           
@@ -156,7 +185,11 @@ export default function Scream({ setCurrentPage, setFinalScore }) {
       });
     }, 50); // Update every 50ms for smooth animation
 
-    return () => clearInterval(interval);
+    return () => {
+      if (waterLevelIntervalRef.current) {
+        clearInterval(waterLevelIntervalRef.current);
+      }
+    };
   }, [isScreaming, gameEnded]);
 
   const requestMicrophoneAccess = async () => {
